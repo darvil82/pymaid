@@ -61,11 +61,14 @@ def gen_mermaid(objects: list[Class]) -> list[str]:
 	content: list[str] = ["```mermaid", "classDiagram", "direction TB"]
 
 	for obj in objects:
+		# add class mermaid representation
 		content += [""] + obj.get_mermaid()
 
+		# add object parents
 		for parent in obj.bases:
 			content.append(f"{parent.__name__} <|-- {obj.name}: parent")
 
+		# add objects that this object uses
 		for name, use in obj.uses.items():
 			content.append(f"{name} <.. {obj.name}: {use}")
 
