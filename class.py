@@ -23,7 +23,7 @@ def get_used_objects(annotations: dict[str, Any]) -> dict[str, tuple[str, str]]:
 	Returns a dictionary of the used objects of the given object.
 	`{name: (type_name, type)}`
 	"""
-	return {k: (get_name(v, False), get_name(v)) for k, v in annotations.items()}
+	return {k: (v.__name__, get_name(v)) for k, v in annotations.items()}
 
 def gen_props_mermaid(obj: "Class") -> list[str]:
 	"""Returns a list of the properties of the given object in mermaid format"""
