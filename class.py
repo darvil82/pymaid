@@ -13,6 +13,7 @@ def get_uses(annotations: dict[str, object]) -> dict[str, object]:
 		for use in tuple(annotations.values())
 	}
 
+
 class Class:
 	def __init__(self, obj: object) -> None:
 		self.object = obj
@@ -69,8 +70,8 @@ def gen_mermaid(objects: list[Class]) -> list[str]:
 			content.append(f"{parent.__name__} <|-- {obj.name}: parent")
 
 		# add objects that this object uses
-		for name, use in obj.uses.items():
-			content.append(f"{name} <.. {obj.name}: {use}")
+		# for name, use in obj.uses.items():
+		# 	content.append(f"{name} <.. {obj.name}: {use}")
 
 	return content + ["```"]
 
