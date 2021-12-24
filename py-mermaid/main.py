@@ -60,7 +60,6 @@ def parse_args():
 	class_args.add_argument("-t", "--text", action="store_true", help="Show text on the paths")
 	class_args.add_argument("-P", "--props", action="store_false", help="Don't show the properties")
 	class_args.add_argument("-m", "--methods", action="store_false", help="Don't show the methods")
-
 	class_args.set_defaults(func=do_class)
 
 	pargs.set_defaults(func=lambda _: pargs.print_help())
