@@ -31,19 +31,6 @@ def generate_mermaid(mermaid: list[str], type: str, direction: str):
 		]
 	)
 
-
-def do_class(args):
-	a = mclass.gen_mermaid(
-		get_import_file(args.input),
-		args.parents,
-		args.uses,
-		args.text,
-		args.props,
-		args.methods
-	)
-	print(generate_mermaid(a, "classDiagram", args.direction))
-
-
 def parse_args():
 	# temp name
 	pargs = argparse.ArgumentParser("pymegen")
@@ -60,7 +47,7 @@ def parse_args():
 	class_args.add_argument("-t", "--text", action="store_true", help="Show text on the paths")
 	class_args.add_argument("-P", "--props", action="store_false", help="Don't show the properties")
 	class_args.add_argument("-m", "--methods", action="store_false", help="Don't show the methods")
-	class_args.set_defaults(func=do_class)
+	class_args.set_defaults(func=mclass.gen_mermaid)
 
 	pargs.set_defaults(func=lambda _: pargs.print_help())
 

@@ -1,5 +1,7 @@
 import inspect
-from typing import Callable
+from typing import Callable, ContextManager
+
+import main
 
 
 
@@ -114,21 +116,16 @@ def gen_parents_mermaid(obj: Class, display_parent_path: bool = True) -> list[st
 	]
 
 
-def gen_mermaid(
-	objects: list[Class],
-	show_parents: bool = True,
-	show_uses: bool = False,
-	show_path_text: bool = False,
-	show_properties: bool = True,
-	show_methods: bool = True
-) -> list[str]:
+def gen_mermaid(args) -> None:
 	"""Returns a list of the mermaid representation of the given objects"""
-	content: list[str] = []
+	file = main.get_import_file(args.input)
 
-	for obj in get_classes(objects):
-		# add class mermaid representation
-		content += [""] + obj.get_mermaid(
-			show_path_text, show_parents, show_uses, show_properties, show_methods
-		)
+	content = []
+	for obj in get_classes(file):
+		content += obj.get_mermaid(args.text, args.parents, args.uses, args.props, args.methods)
 
-	return content
+	print(main.generate_mermaid(
+		content,
+		"classDiagram",
+		args.direction
+	))
