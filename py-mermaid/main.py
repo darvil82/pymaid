@@ -21,7 +21,7 @@ def generate_mermaid(mermaid: list[str], type: str, direction: str):
 		print(f"Invalid direction: {dir}")
 		quit()
 
-	return "\n".join(
+	print("\n".join(
 		[
 			"```mermaid",
 			type,
@@ -29,7 +29,7 @@ def generate_mermaid(mermaid: list[str], type: str, direction: str):
 			*mermaid,
 			"```"
 		]
-	)
+	))
 
 def parse_args():
 	# temp name
@@ -47,6 +47,7 @@ def parse_args():
 	class_args.add_argument("-t", "--text", action="store_true", help="Show text on the paths")
 	class_args.add_argument("-P", "--props", action="store_false", help="Don't show the properties")
 	class_args.add_argument("-m", "--methods", action="store_false", help="Don't show the methods")
+	class_args.add_argument("-e", "--extra", action="store_false", help="Don't show parents recursively")
 	class_args.set_defaults(func=mclass.gen_mermaid)
 
 	pargs.set_defaults(func=lambda _: pargs.print_help())

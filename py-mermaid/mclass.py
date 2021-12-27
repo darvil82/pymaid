@@ -131,20 +131,23 @@ def gen_mermaid(args) -> None:
 	file = main.get_import_file(args.input)
 	classes = get_classes(file)
 
-	classes_to_parse: list[Class] = []
-	for cls in classes:
-		parents = get_parents_recursive(cls)
-		# check for duplicates
-		for x in parents:
-			if x.name not in [y.name for y in classes_to_parse]:
-				classes_to_parse.append(x)
+	if args.extra:
+		classes_to_parse: list[Class] = []
+		for cls in classes:
+			parents = get_parents_recursive(cls)
+			# check for duplicates
+			for x in parents:
+				if x.name not in [y.name for y in classes_to_parse]:
+					classes_to_parse.append(x)
+	else:
+		classes_to_parse = classes
 
 	content = []
 	for obj in classes_to_parse:
 		content += obj.get_mermaid(args.text, args.parents, args.uses, args.props, args.methods)
 
-	print(main.generate_mermaid(
+	main.generate_mermaid(
 		content,
 		"classDiagram",
 		args.direction
-	))
+	)
