@@ -1,5 +1,5 @@
 import inspect
-from typing import Callable, ContextManager
+from typing import Callable
 
 import main
 
@@ -10,8 +10,11 @@ class Class:
 		self.object = obj
 		self.name: str = obj.__name__
 		self.parents: list[object] = obj.__bases__
-		self.annotations: dict[str, object] = obj.__annotations__
+		self.annotations: dict[str, object] = inspect.get_annotations(obj)
 		self.uses = get_used_objects(self.annotations)
+
+	def __repr__(self) -> str:
+		return self.name
 
 	def get_mermaid(
 		self,
@@ -116,12 +119,28 @@ def gen_parents_mermaid(obj: Class, display_parent_path: bool = True) -> list[st
 	]
 
 
+def get_parents_recursive(obj: Class) -> list[Class]:
+	objs = [obj]
+	for parent in obj.parents:
+		objs.extend(get_parents_recursive(Class(parent)))
+	return objs
+
+
 def gen_mermaid(args) -> None:
 	"""Returns a list of the mermaid representation of the given objects"""
 	file = main.get_import_file(args.input)
+	classes = get_classes(file)
+
+	classes_to_parse: list[Class] = []
+	for cls in classes:
+		parents = get_parents_recursive(cls)
+		# check for duplicates
+		for x in parents:
+			if x.name not in [y.name for y in classes_to_parse]:
+				classes_to_parse.append(x)
 
 	content = []
-	for obj in get_classes(file):
+	for obj in classes_to_parse:
 		content += obj.get_mermaid(args.text, args.parents, args.uses, args.props, args.methods)
 
 	print(main.generate_mermaid(

@@ -1,17 +1,4 @@
-class Person:
-	name: str
-	surname: str
-	age: int
-	DNI: str
-	address: str
-	friends: list["Person"]
-
-	def walk(self):
-		...
-	def eat(self, food, amount: int):
-		...
-	def sleep(self):
-		...
+from school import Person
 
 class City:
 	buildings: list["Building"]
@@ -40,13 +27,11 @@ class University(School):
 	faculties: int
 	departments: int
 
-
 class TownHall(Building):
 	mayor: Person
 
 	def announce(self, announcement):
 		...
-
 
 class Factory(Building):
 	workers: list[Person]
