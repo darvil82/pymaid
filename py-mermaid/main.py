@@ -5,6 +5,12 @@ from os import path
 
 import mclass
 
+def log(msg: str, quit: bool = False):
+	print(msg, file=sys.stderr)
+	if quit:
+		exit(1)
+
+
 DIRECTIONS = (
 	"LR",
 	"RL",
@@ -18,8 +24,7 @@ def get_import_file(file):
 
 def generate_mermaid(mermaid: list[str], type: str, direction: str):
 	if (dir := direction.upper()) not in DIRECTIONS:
-		print(f"Invalid direction: {dir}")
-		quit()
+		log(f"Invalid direction: {dir}", True)
 
 	print("\n".join(
 		[
@@ -32,20 +37,20 @@ def generate_mermaid(mermaid: list[str], type: str, direction: str):
 	))
 
 def parse_args():
-	# temp name
-	pargs = argparse.ArgumentParser("pymegen")
+	pargs = argparse.ArgumentParser("pymaid")
 	pargs.add_argument("input", help="The input file", type=str)
 	pargs.add_argument(
 		"-d", "--direction", help=f"The direction of the diagram {DIRECTIONS}",
 		type=str, default="TB"
 	)
-	subparser = pargs.add_subparsers()
+	subparsers = pargs.add_subparsers()
 
-	class_args = subparser.add_parser("class")
+	class_args = subparsers.add_parser("class")
 	class_args.add_argument("-p", "--parents", action="store_false", help="Don't show the parent classes")
 	class_args.add_argument("-u", "--uses", action="store_true", help="Show the used classes")
 	class_args.add_argument("-t", "--text", action="store_true", help="Show text on the paths")
 	class_args.add_argument("-P", "--props", action="store_false", help="Don't show the properties")
+	class_args.add_argument("-i", "--init", action="store_true", help="Check the __init__ method for instance properties too")
 	class_args.add_argument("-m", "--methods", action="store_false", help="Don't show the methods")
 	class_args.add_argument("-e", "--extra", action="store_false", help="Don't show parents recursively")
 	class_args.set_defaults(func=mclass.gen_mermaid)

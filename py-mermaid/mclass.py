@@ -1,5 +1,7 @@
 import inspect
+from os import replace
 from typing import Callable
+import re
 
 import main
 
@@ -22,11 +24,12 @@ class Class:
 		show_parents: bool = True,
 		show_uses: bool = False,
 		show_props: bool = True,
-		show_methods: bool = True
+		show_methods: bool = True,
+		read_init: bool = True,
 	) -> list[str]:
 		"""Returns a list of the mermaid representation of the given object"""
 		return [
-			*(gen_class_mermaid(self, show_props, show_methods)),
+			*(gen_class_mermaid(self, show_props, read_init, show_methods)),
 			*(gen_uses_mermaid(self, show_path_text) if show_uses else []),
 			*(gen_parents_mermaid(self, show_path_text) if show_parents else [])
 		]
@@ -60,18 +63,40 @@ def get_used_objects(annotations: dict[str, object]) -> dict[str, tuple[str, str
 	}
 
 
-def gen_props_mermaid(obj: Class) -> list[str]:
+
+
+
+def gen_props_mermaid(obj: Class, read_init: bool = True) -> list[str]:
 	"""Returns a list of the properties of the given object in mermaid format"""
-	return [
-	    f"\t{get_name(type)}: {prop}" for prop, type in obj.annotations.items()
+	# get all properties of the object
+	props_to_show: list[str] = [
+		f"\t{get_name(type)}: {prop}" for prop, type in obj.annotations.items()
 	]
+
+	# check if obj has innit method, make sure we are not dealing with object
+	if "__init__" in obj.object.__dict__ and obj.object is not object and read_init:
+		method = obj.object.__init__
+		# get first argument of the init method
+		args = inspect.getfullargspec(method).annotations
+		# get the lines of the init method
+		for prop, type in args.items():
+			if prop == "return":
+				continue
+			props_to_show.append(
+				f"\tself 🡪 {get_name(type)}: {prop}"
+				# make sure there are no brackets in the type name,
+				# otherwise mermaid will display these as methods
+				.replace("(", "[").replace(")", "]")
+			)
+
+	return props_to_show
 
 
 def gen_methods_mermaid(obj: Class) -> list[str]:
 	content: list[str] = []
 	for name, method in inspect.getmembers(obj.object, predicate=inspect.isfunction):
 		try:
-			return_type: str | None = get_name(method.__annotations__["return"])
+			return_type: str | None = method.__annotations__["return"].__name__
 		except (AttributeError, KeyError):
 			return_type = None
 
@@ -85,11 +110,12 @@ def gen_methods_mermaid(obj: Class) -> list[str]:
 def gen_class_mermaid(
 	obj: Class,
 	show_props: bool = True,
+	read_init: bool = True,
 	show_methods: bool = True
 ) -> list[str]:
 	content = [
 		f"class {obj.name} {{",
-		*(gen_props_mermaid(obj) if show_props else []),
+		*(gen_props_mermaid(obj, read_init) if show_props else []),
 		*(gen_methods_mermaid(obj) if show_methods else []),
 		"}"
 	]
@@ -144,7 +170,9 @@ def gen_mermaid(args) -> None:
 
 	content = []
 	for obj in classes_to_parse:
-		content += obj.get_mermaid(args.text, args.parents, args.uses, args.props, args.methods)
+		content += obj.get_mermaid(
+			args.text, args.parents, args.uses, args.props, args.methods, args.init
+		)
 
 	main.generate_mermaid(
 		content,
