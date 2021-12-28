@@ -63,9 +63,6 @@ def get_used_objects(annotations: dict[str, object]) -> dict[str, tuple[str, str
 	}
 
 
-
-
-
 def gen_props_mermaid(obj: Class, read_init: bool = True) -> list[str]:
 	"""Returns a list of the properties of the given object in mermaid format"""
 	# get all properties of the object
