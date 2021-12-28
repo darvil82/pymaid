@@ -79,14 +79,11 @@ def gen_props_mermaid(obj: Class, read_init: bool = True) -> list[str]:
 		for prop, type in args.items():
 			if prop == "return":
 				continue
-			props_to_show.append(
-				f"\tself 🡪 {get_name(type)}: {prop}"
-				# make sure there are no brackets in the type name,
-				# otherwise mermaid will display these as methods
-				.replace("(", "[").replace(")", "]")
-			)
+			props_to_show.append(f"\tself 🡪 {get_name(type)}: {prop}")
 
-	return props_to_show
+	# make sure there are no brackets in the type name,
+	# otherwise mermaid will display these as methods
+	return [x.replace("(", "[").replace(")", "]") for x in props_to_show]
 
 
 def gen_methods_mermaid(obj: Class) -> list[str]:
@@ -154,7 +151,7 @@ def gen_mermaid(args) -> None:
 	file = main.get_import_file(args.input)
 	classes = get_classes(file)
 
-	if args.extra:
+	if args.no_extra:
 		classes_to_parse: list[Class] = []
 		for cls in classes:
 			parents = get_parents_recursive(cls)
@@ -168,11 +165,14 @@ def gen_mermaid(args) -> None:
 	content = []
 	for obj in classes_to_parse:
 		content += obj.get_mermaid(
-			args.text, args.parents, args.uses, args.props, args.methods, args.init
+			args.text, args.parents, args.uses, args.props, args.methods,
+			args.init
 		)
 
 	main.generate_mermaid(
 		content,
 		"classDiagram",
-		args.direction
+		args.direction,
+		args.output,
+		args.no_md
 	)
