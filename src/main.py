@@ -4,7 +4,7 @@ from io import TextIOWrapper
 import sys
 from os import path
 
-from . import mclass
+import mclass
 
 
 def log(msg: str, quit: bool = False):

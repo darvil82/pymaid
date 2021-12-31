@@ -6,7 +6,7 @@
 			"type": "python",
 			"request": "launch",
 			"program": "src/main.py",
-			"args": ["test/city.py", "-d", "tb", "class"],
+			"args": ["test/city.py", "-d", "TB", "class"],
 			"console": "integratedTerminal"
 		}
 	]

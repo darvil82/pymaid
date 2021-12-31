@@ -1,7 +1,7 @@
 import inspect
 from typing import Callable
 
-from . import main
+import main
 
 
 class Class:
