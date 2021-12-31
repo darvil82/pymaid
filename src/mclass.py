@@ -1,10 +1,7 @@
 import inspect
-from os import replace
 from typing import Callable
-import re
 
-import main
-
+from . import main
 
 
 class Class:
@@ -31,7 +28,7 @@ class Class:
 		return [
 			*(gen_class_mermaid(self, show_props, read_init, show_methods)),
 			*(gen_uses_mermaid(self, show_path_text) if show_uses else []),
-			*(gen_parents_mermaid(self, show_path_text) if show_parents else [])
+			*(gen_parents_mermaid(self, show_path_text) if show_parents else []),
 		]
 
 
@@ -56,10 +53,8 @@ def get_used_objects(annotations: dict[str, object]) -> dict[str, tuple[str, str
 	`{name: (type_name, type)}`
 	"""
 	return {
-		k: (
-			(v if isinstance(v, str) else v.__name__),
-			get_name(v)
-		) for k, v in annotations.items()
+		k: ((v if isinstance(v, str) else v.__name__), get_name(v))
+		for k, v in annotations.items()
 	}
 
 
@@ -105,27 +100,29 @@ def gen_class_mermaid(
 	obj: Class,
 	show_props: bool = True,
 	read_init: bool = True,
-	show_methods: bool = True
+	show_methods: bool = True,
 ) -> list[str]:
 	content = [
 		f"class {obj.name} {{",
 		*(gen_props_mermaid(obj, read_init) if show_props else []),
 		*(gen_methods_mermaid(obj) if show_methods else []),
-		"}"
+		"}",
 	]
 	return content if len(content) >= 3 else [f"class {obj.name}"]
 
 
 def gen_uses_mermaid(obj: Class, display_use_path: bool = True) -> list[str]:
 	"""Returns a list of the used objects of the given object in mermaid format"""
-	new = []	# the new mermaid representation
-	shown = []	# used to prevent duplicates
+	new = []  # the new mermaid representation
+	shown = []  # used to prevent duplicates
 
 	for _, type in obj.uses.items():
 		if type[0] in shown:
 			continue
 		count = tuple(x[0] for x in obj.uses.values()).count(type[0])
-		new.append(f'{obj.name} "{count}" ..> {type[0]}{f": {type[1]}" * display_use_path}')
+		new.append(
+			f'{obj.name} "{count}" ..> {type[0]}{f": {type[1]}" * display_use_path}'
+		)
 		shown.append(type[0])
 
 	return new
@@ -165,14 +162,9 @@ def gen_mermaid(args) -> None:
 	content = []
 	for obj in classes_to_parse:
 		content += obj.get_mermaid(
-			args.text, args.parents, args.uses, args.props, args.methods,
-			args.init
+			args.text, args.parents, args.uses, args.props, args.methods, args.init
 		)
 
 	main.generate_mermaid(
-		content,
-		"classDiagram",
-		args.direction,
-		args.output,
-		args.no_md
+		content, "classDiagram", args.direction, args.output, args.no_md
 	)
