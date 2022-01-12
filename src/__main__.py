@@ -98,10 +98,8 @@ def parse_args():
 	return pargs.parse_args()
 
 
-def main():
-	args = parse_args()
-	args.func(args)
 
 
-if __name__ == "__main__":
-	main()
+
+args = parse_args()
+args.func(args)

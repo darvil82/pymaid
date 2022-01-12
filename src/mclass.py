@@ -1,7 +1,7 @@
 import inspect
 from typing import Callable
 
-import main
+import __main__
 
 
 class Class:
@@ -145,7 +145,7 @@ def get_parents_recursive(obj: Class) -> list[Class]:
 
 def gen_mermaid(args) -> None:
 	"""Returns a list of the mermaid representation of the given objects"""
-	file = main.get_import_file(args.input)
+	file = __main__.get_import_file(args.input)
 	classes = get_classes(file)
 
 	if args.no_extra:
@@ -165,6 +165,6 @@ def gen_mermaid(args) -> None:
 			args.text, args.parents, args.uses, args.props, args.methods, args.init
 		)
 
-	main.generate_mermaid(
+	__main__.generate_mermaid(
 		content, "classDiagram", args.direction, args.output, args.no_md
 	)
