@@ -8,12 +8,7 @@ DIRECTIONS = ("LR", "RL", "TB", "BT")
 
 
 
-def log(msg: str, quit: bool = False):
-	print(msg, file=sys.stderr)
-	if quit:
-		exit(1)
-
-def parse_args():
+def parse_args() -> argparse.Namespace:
 	pargs = argparse.ArgumentParser("pymaid")
 	pargs.add_argument("input", help="The input file", type=str)
 	pargs.add_argument(

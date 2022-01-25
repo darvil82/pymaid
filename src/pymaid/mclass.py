@@ -36,7 +36,7 @@ def get_classes(obj: object) -> list[Class]:
 	return [Class(obj) for _, obj in inspect.getmembers(obj, predicate=inspect.isclass)]
 
 
-def get_function_args(func: Callable):
+def get_function_args(func: Callable) -> list[str]:
 	"""Returns a list of the arguments of a function"""
 	return [*inspect.signature(func).parameters]
 
