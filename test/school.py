@@ -2,7 +2,7 @@ class Person:
 	name: str
 	surname: str
 	age: int
-	id: int
+	id_: int
 	address: str
 	friends: list["Person"]
 

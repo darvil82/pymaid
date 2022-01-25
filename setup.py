@@ -24,7 +24,7 @@ setuptools.setup(
 	python_requires=">=3.10",
 	entry_points={
 		"console_scripts": [
-			"pymaid=pymaid"
+			"pymaid=pymaid:main"
 		]
 	}
 )
