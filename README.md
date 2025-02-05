@@ -1,6 +1,6 @@
 # Pymaid
 
-Create Mermaid representations from python code.
+Create Mermaid representations from python code. Proof of concept and barebones implementation.
 
 
 ## Example
@@ -98,9 +98,5 @@ class Teacher {
 }
 Staff <|-- Teacher
 ```
-
-#### Which looks like this:
-
-![Screenshot_20220125_205812](https://user-images.githubusercontent.com/48654552/151050097-225f658a-0a61-4727-9938-d2f727146e18.png)
 
 Several command arguments are available for altering the generated diagram.
